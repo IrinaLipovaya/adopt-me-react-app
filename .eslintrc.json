@@ -9,7 +9,9 @@
   ],
   "rules": {
     "react/prop-types": 0,
-    "no-console": 1
+    "no-console": 1,
+    "react-hooks/rules-of-hooks": 2, // to display an error for the hooks rules
+    "react-hooks/exhaustive-deps": 1 // to display a warning
   },
   "plugins": ["react", "import", "jsx-a11y"],
   "parserOptions": {

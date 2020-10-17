@@ -20,9 +20,11 @@
     "eslint-plugin-jsx-a11y": "^6.3.1",
     "eslint-plugin-react": "^7.21.3",
     "parcel-bundler": "^1.12.4",
+    "eslint-plugin-react-hooks": "^4.1.2",
     "prettier": "^2.1.2"
   },
   "dependencies": {
+    "@frontendmasters/pet": "^1.0.3",
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   }
