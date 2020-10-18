@@ -3,6 +3,8 @@ import pet from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import ThemeContext from "./ThemeContext";
+import Modal from "./Modal";
+import { navigate } from "@reach/router";
 
 class Details extends React.Component {
   constructor(props) {
@@ -10,6 +12,7 @@ class Details extends React.Component {
 
     this.state = {
       loading: true,
+      showModal: false,
     };
   }
   //   state = { loading: true }; // shorter alternative to a constructor function
@@ -18,6 +21,7 @@ class Details extends React.Component {
       .animal(this.props.id)
       .then(({ animal }) => {
         this.setState({
+          url: animal.url,
           name: animal.name,
           animal: animal.type,
           location: `${animal.contact.address.city}, ${animal.contact.address.state}`,
@@ -30,13 +34,25 @@ class Details extends React.Component {
       .catch((err) => this.setState({ error: err }));
   }
 
+  toggleModal = () => this.setState({ showModal: !this.state.showModal });
+
+  adopt = () => navigate(this.state.url);
+
   // a class component must contain a render method
   render() {
     if (this.state.loading) {
       return <h1>Loading... </h1>;
     }
 
-    const { animal, breed, location, description, media, name } = this.state;
+    const {
+      animal,
+      breed,
+      location,
+      description,
+      name,
+      media,
+      showModal,
+    } = this.state;
 
     return (
       <div className="details">
@@ -55,6 +71,15 @@ class Details extends React.Component {
             )}
           </ThemeContext.Consumer>
           <p>{description}</p>
+          {showModal ? (
+            <Modal>
+              <h1>Would you like to adopt {name}?</h1>
+              <div className="buttons">
+                <button onClick={this.adopt}>Yes</button>
+                <button onClick={this.toggleModal}>No, I am a monster</button>
+              </div>
+            </Modal>
+          ) : null}
         </div>
       </div>
     );
