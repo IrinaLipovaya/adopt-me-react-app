@@ -1,15 +1,53 @@
 import React from "react";
+import pet from "@frontendmasters/pet";
+import Carousel from "./Carousel";
 
-const Details = (props) => {
-  return (
-    <div>
-      <h1>Hey, that is details page</h1>
-    </div>
+class Details extends React.Component {
+  constructor(props) {
+    super(props);
 
-    // <pre>
-    //   <code>{ JSON.stringify(props, null, 4) }</code> {/* to debug props */}
-    // </pre>
-  );
-};
+    this.state = {
+      loading: true,
+    };
+  }
+  //   state = { loading: true }; // shorter alternative to a constructor function
+  componentDidMount() {
+    pet
+      .animal(this.props.id)
+      .then(({ animal }) => {
+        this.setState({
+          name: animal.name,
+          animal: animal.type,
+          location: `${animal.contact.address.city}, ${animal.contact.address.state}`,
+          description: animal.description,
+          media: animal.photos,
+          breed: animal.breeds.primary,
+          loading: false,
+        });
+      })
+      .catch((err) => this.setState({ error: err }));
+  }
+
+  // a class component must contain a render method
+  render() {
+    if (this.state.loading) {
+      return <h1>Loading... </h1>;
+    }
+
+    const { animal, breed, location, description, media, name } = this.state;
+
+    return (
+      <div className="details">
+        <Carousel media={media} />
+        <div>
+          <h1>{name}</h1>
+          <h2>{`${animal} — ${breed} — ${location}`}</h2>
+          <button>Adopt {name}</button>
+          <p>{description}</p>
+        </div>
+      </div>
+    );
+  }
+}
 
 export default Details;
