@@ -4,6 +4,7 @@
   "description": "Adopt me is a React application which is built based on Frontend Masters's React courses by Brian Holt",
   "main": "index.js",
   "scripts": {
+    "clear-build-cache": "rm -rf .cache/ dist/",
     "dev": "parcel src/index.html",
     "dev:mock": "cross-env PET_MOCK=mock parcel src/index.html",
     "format": "prettier \"src/**/*.{js,html}\" --write",
