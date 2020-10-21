@@ -1,9 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { render } from "react-dom";
-import SearchParams from "./SearchParams";
 import { Router, Link } from "@reach/router";
-import Details from "./Details";
 import ThemeContext from "./ThemeContext";
+
+// dynamic import
+const Details = lazy(() => import("./Details")); // placeholder of the Details component
+const SearchParams = lazy(() => import("./SearchParams"));
 
 const App = () => {
   const themeHook = useState("darkblue");
@@ -14,10 +16,12 @@ const App = () => {
         <header>
           <Link to="/">Adopt Me!</Link>
         </header>
-        <Router>
-          <SearchParams path="/" />
-          <Details path="/details/:id" />
-        </Router>
+        <Suspense fallback={<h1>Loading route...</h1>}>
+          <Router>
+            <SearchParams path="/" />
+            <Details path="/details/:id" />
+          </Router>
+        </Suspense>
       </div>
     </ThemeContext.Provider>
   );
