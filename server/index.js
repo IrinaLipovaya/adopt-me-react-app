@@ -1,6 +1,6 @@
 import express from "express";
 import React from "react";
-import { renderToString } from "react-dom/server";
+import { renderToNodeStream } from "react-dom/server";
 import { ServerLocation } from "@reach/router";
 import fs from "fs";
 import App from "../src/App";
@@ -16,6 +16,7 @@ const app = express();
 app.use("/dist", express.static("dist"));
 // middleware to run every time when there is a request
 app.use((req, res) => {
+  res.write(parts[0]);
   const reactMarkup = (
     // server side rendering
     <ServerLocation url={req.url}>
@@ -23,8 +24,12 @@ app.use((req, res) => {
     </ServerLocation>
   );
 
-  res.send(parts[0] + renderToString(reactMarkup) + parts[1]);
-  res.end();
+  const stream = renderToNodeStream(reactMarkup);
+  stream.pipe(res, { end: false });
+  stream.on("end", () => {
+    res.write(parts[1]);
+    res.end();
+  });
 });
 
 app.listen(PORT);
