@@ -1,24 +1,31 @@
 import React from "react";
-import pet from "@frontendmasters/pet";
+import pet, { Photo } from "@frontendmasters/pet";
 import Carousel from "./Carousel";
 import ErrorBoundary from "./ErrorBoundary";
 import ThemeContext from "./ThemeContext";
 import Modal from "./Modal";
-import { navigate } from "@reach/router";
+import { navigate, RouteComponentProps } from "@reach/router";
 
-class Details extends React.Component {
-  constructor(props) {
-    super(props);
-
-    this.state = {
-      loading: true,
-      showModal: false,
-    };
-  }
+class Details extends React.Component<RouteComponentProps<{ id: string }>> {
+  public state = {
+    loading: true,
+    showModal: false,
+    name: "",
+    animal: "",
+    location: "",
+    description: "",
+    media: [] as Photo[],
+    breed: "",
+    url: "",
+  };
   //   state = { loading: true }; // shorter alternative to a constructor function
-  componentDidMount() {
+  public componentDidMount() {
+    if (!this.props.id) {
+      navigate("/");
+      return;
+    }
     pet
-      .animal(this.props.id)
+      .animal(+this.props.id)
       .then(({ animal }) => {
         this.setState({
           url: animal.url,
@@ -31,15 +38,16 @@ class Details extends React.Component {
           loading: false,
         });
       })
-      .catch((err) => this.setState({ error: err }));
+      .catch((err: Error) => this.setState({ error: err }));
   }
 
-  toggleModal = () => this.setState({ showModal: !this.state.showModal });
+  public toggleModal = () =>
+    this.setState({ showModal: !this.state.showModal });
 
-  adopt = () => navigate(this.state.url);
+  public adopt = () => navigate(this.state.url);
 
   // a class component must contain a render method
-  render() {
+  public render() {
     if (this.state.loading) {
       return <h1>Loading... </h1>;
     }
@@ -86,7 +94,9 @@ class Details extends React.Component {
   }
 }
 
-export default function DetailsErrorBoundary(props) {
+export default function DetailsErrorBoundary(
+  props: RouteComponentProps<{ id: string }>
+) {
   return (
     <ErrorBoundary>
       <Details {...props} />
